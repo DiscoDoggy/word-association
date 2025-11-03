@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html class="h-full">
+    <head>
+        <meta charset="utf-8">
+        <title>Word Association</title>
+        <meta name="description" content="">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <link href="/static/css/output.css" rel="stylesheet">
+        <script src="/static/js/htmx.min.js"></script>
+        <script src="https://cdn.jsdelivr.net/npm/htmx-ext-ws@2.0.4" integrity="sha384-1RwI/nvUSrMRuNj7hX1+27J8XDdCoSLf0EjEyF69nacuWyiJYoQ/j39RT1mSnd2G" crossorigin="anonymous"></script>
+    </head>
+    <body class="h-screen"
+        hx-ext="ws" 
+    >
+        <!-- game container  -->
+         
+        <main class="flex flex-col justify-between h-full"
+            hx-ext="ws"
+            ws-connect="/ws"
+        >
+            
+            <!-- main player side -->
+            <div class="flex flex-col items-center justify-center grow bg-green-500">
+                <p>You</p>
+                <div class="">
+                    <input class="m-2 rounded-xl bg-white text-center" type="text" placeholder="Your Word...">
+                </div>
+            </div>
+
+            <!-- opponent side -->
+             <div class="flex flex-col grow items-center justify-center  bg-red-500">
+                <p>opponent</p>
+                
+                <div class="">
+                    <input disabled class="m-2 rounded-xl bg-white text-center" type="text" placeholder="Their Word...">
+                </div>
+             </div>
+        </main>
+    </body>
+</html> 
+  
