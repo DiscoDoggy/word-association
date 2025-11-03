@@ -24,12 +24,12 @@
                 <p>You</p>
                 <form 
                     ws-send
-                    hx-vals='{"action": "submission"}'
+                    hx-vals='{"event": "word-submission"}'
                 >
                     <input class="m-2 rounded-xl bg-white text-center" type="text" name="word" placeholder="Your Word..."
                         ws-send
                         hx-trigger="input changed delay:250ms" 
-                        hx-vals='{"action": "text-box-input-change"}'
+                        hx-vals='{"event": "word-change"}'
                     >
                     <button type="submit">Submit Word</button>
                 </form>
