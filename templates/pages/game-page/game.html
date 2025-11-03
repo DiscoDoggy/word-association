@@ -22,9 +22,17 @@
             <!-- main player side -->
             <div class="flex flex-col items-center justify-center grow bg-green-500">
                 <p>You</p>
-                <div class="">
-                    <input class="m-2 rounded-xl bg-white text-center" type="text" placeholder="Your Word...">
-                </div>
+                <form 
+                    ws-send
+                    hx-vals='{"action": "submission"}'
+                >
+                    <input class="m-2 rounded-xl bg-white text-center" type="text" name="word" placeholder="Your Word..."
+                        ws-send
+                        hx-trigger="input changed delay:250ms" 
+                        hx-vals='{"action": "text-box-input-change"}'
+                    >
+                    <button type="submit">Submit Word</button>
+                </form>
             </div>
 
             <!-- opponent side -->
