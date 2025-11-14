@@ -1,7 +1,10 @@
 package main
 
 import (
+	"encoding/json"
+	"fmt"
 	"log"
+
 	"github.com/google/uuid"
 	"github.com/gorilla/websocket"
 )
@@ -38,8 +41,45 @@ func (c *Client) readMessages() {
 			}
 			break
 		}
+
 		log.Println("Message type: ", messageType)
 		log.Println("Payload: ", string(payload))
+
+		// parse payload
+		if messageType == 1 {
+			var event map[string]json.RawMessage
+			err := json.Unmarshal(payload, &event)
+			if err != nil {
+				log.Fatal(err)
+			}
+			// TODO : Create more robust handling for events that may not exist or may not match structure
+			// fatalling inside of a goroutine kills entire program and probably should not be used
+			eventType := string(event["event"])
+			if eventType != "" {
+				// raw json strings come with their leading and trailing quotation marks still this parses this out
+				eventType = eventType[1:len(eventType) - 1]
+			}
+
+			clientEventType, err := GetClientEventFromStr(eventType)
+			if err != nil {
+				log.Fatal(err)
+			}
+			if clientEventType == mmQueue {
+				err = c.manager.playerQueue.addClientToQueue(c)
+				if err != nil {
+					log.Fatal(err)
+				}
+			} else if clientEventType == mmUnqueue {
+				err = c.manager.playerQueue.removePlayerFromQueue(c)
+				if err != nil {
+					log.Fatal(err)
+				}
+			}
+
+			fmt.Println("Client event:", string(event["event"]))
+			fmt.Println("Client event message:", string(event["username-input"]))
+			
+		}
 
 		//for testing
 		for wsclient := range c.manager.clients {
@@ -75,4 +115,4 @@ func (c *Client) writeMessages() {
 //so one of the difficulties here is that t
 
 //write messages sends  messages tot he clients
-// read messages is messages received by the client object on the server and can be read
+// read messages is messages received by the client object on the server and can be readtjerltjwerkltwtwtwetwertw

@@ -15,6 +15,7 @@ var upgrader = websocket.Upgrader {
 
 type Manager struct {
 	clients ClientList
+	playerQueue *PlayerQueue
 
 	sync.RWMutex
 }
@@ -22,6 +23,7 @@ type Manager struct {
 func NewManager() *Manager {
 	return &Manager{
 		clients: make(ClientList),
+		playerQueue: CreatePlayerQueue(),
 	}
 }
 

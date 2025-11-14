@@ -1,9 +1,14 @@
 package main
 
-import "errors"
+import (
+	"errors"
+	"sync"
+)
 
 type PlayerQueue struct {
 	queue []*Client
+
+	sync.RWMutex
 }
 
 func CreatePlayerQueue() *PlayerQueue {
@@ -13,6 +18,9 @@ func CreatePlayerQueue() *PlayerQueue {
 }
 
 func (pq *PlayerQueue) addClientToQueue(client *Client) error {
+	pq.Lock()
+	defer pq.Unlock()
+
 	for _, val := range pq.queue {
 		if client == val {
 			return errors.New("Client is already queued")
@@ -24,6 +32,9 @@ func (pq *PlayerQueue) addClientToQueue(client *Client) error {
 }
 
 func (pq *PlayerQueue) removePlayerFromQueue(client *Client) error{
+	pq.Lock()
+	defer pq.Unlock()
+
 	for idx, c := range pq.queue {
 		if c == client {
 			pq.queue = append(pq.queue[:idx], pq.queue[idx+1:]...)	
@@ -32,6 +43,11 @@ func (pq *PlayerQueue) removePlayerFromQueue(client *Client) error{
 	}
 
 	return nil
+}
+
+func (pq *PlayerQueue) popNPlayersFromQueue(numPlayersToPop int) []*Client {
+	pq.Lock()
+	defer pq.Unlock()
 }
 
 func (pq *PlayerQueue) ScanPlayerQueue() {
@@ -53,4 +69,3 @@ func (pq *PlayerQueue) ScanPlayerQueue() {
 		}
 	}
 }
-
