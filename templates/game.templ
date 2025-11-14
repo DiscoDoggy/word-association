@@ -1,43 +1,32 @@
 package templates
 
-templ GamePage() {
-    @Base("Word Association") {
-
-        <body class="h-screen"
-            hx-ext="ws" 
-        >
-            <!-- game container  -->
-            
-            <main class="flex flex-col justify-between h-full"
-                hx-ext="ws"
-                ws-connect="/ws"
+templ GameContent() {
+    <!-- game container  -->
+    <main class="flex flex-col justify-between h-full">
+        
+        <!-- main player side -->
+        <div class="flex flex-col items-center justify-center grow bg-green-500">
+            <p>You</p>
+            <form 
+                ws-send
+                hx-vals='{"event": "m.word-submission"}'
             >
-                
-                <!-- main player side -->
-                <div class="flex flex-col items-center justify-center grow bg-green-500">
-                    <p>You</p>
-                    <form 
-                        ws-send
-                        hx-vals='{"event": "word-submission"}'
-                    >
-                        <input class="m-2 rounded-xl bg-white text-center" type="text" name="word" placeholder="Your Word..."
-                            ws-send
-                            hx-trigger="input changed delay:250ms" 
-                            hx-vals='{"event": "word-change"}'
-                        >
-                        <button type="submit">Submit Word</button>
-                    </form>
-                </div>
+                <input class="m-2 rounded-xl bg-white text-center" type="text" name="word" placeholder="Your Word..."
+                    ws-send
+                    hx-trigger="input changed delay:250ms" 
+                    hx-vals='{"event": "m.word-change"}'
+                >
+                <button type="submit">Submit Word</button>
+            </form>
+        </div>
 
-                <!-- opponent side -->
-                <div class="flex flex-col grow items-center justify-center  bg-red-500">
-                    <p>opponent</p>
-                    
-                    <div class="">
-                        <input disabled class="m-2 rounded-xl bg-white text-center" type="text" placeholder="Their Word...">
-                    </div>
-                </div>
-            </main>
-        </body>
-    }
+        <!-- opponent side -->
+        <div class="flex flex-col grow items-center justify-center  bg-red-500">
+            <p>opponent</p>
+            
+            <div class="">
+                <input disabled class="m-2 rounded-xl bg-white text-center" type="text" placeholder="Their Word...">
+            </div>
+        </div>
+    </main>
 }
