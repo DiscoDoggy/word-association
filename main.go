@@ -45,13 +45,12 @@ func serveIndex(w http.ResponseWriter, r *http.Request) {
 // 		return
 // 	}
 
-// 	matchPage := templates.GamePage() 
+// 	matchPage := templates.GamePage()
 // 	matchPage.Render(context.Background(), w)
 // }
 
 func main() {
 	wsManager := NewManager()
-
 
 	http.HandleFunc("/", serveIndex)
 	// http.HandleFunc("/party-room", servePartyRoom)

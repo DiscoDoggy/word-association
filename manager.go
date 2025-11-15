@@ -8,23 +8,25 @@ import (
 	"github.com/gorilla/websocket"
 )
 
-var upgrader = websocket.Upgrader {
-	ReadBufferSize: 1024,
+var upgrader = websocket.Upgrader{
+	ReadBufferSize:  1024,
 	WriteBufferSize: 1024,
 }
 
 type Manager struct {
-	clients ClientList
-	playerQueue *PlayerQueue
-	matches		
+	clients      ClientList
+	playerQueue  *PlayerQueue
+	matchManager *MatchManager
 	sync.RWMutex
 }
 
 func NewManager() *Manager {
-	return &Manager{
-		clients: make(ClientList),
-		playerQueue: CreatePlayerQueue(),
-	}
+	var manager Manager
+	manager.clients = make(ClientList)
+	manager.playerQueue = CreatePlayerQueue(&manager)
+	manager.matchManager = CreateMatchManager()
+
+	return &manager
 }
 
 func (m *Manager) addClient(client *Client) {

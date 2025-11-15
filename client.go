@@ -10,7 +10,7 @@ import (
 )
 
 type Client struct {
-	id			uuid.UUID	
+	id         uuid.UUID
 	connection *websocket.Conn
 	manager    *Manager
 
@@ -22,15 +22,15 @@ type ClientList map[*Client]bool
 
 func NewClient(conn *websocket.Conn, manager *Manager) *Client {
 	return &Client{
-		id: uuid.New(),
+		id:         uuid.New(),
 		connection: conn,
-		manager: manager,
-		egress: make(chan []byte),
+		manager:    manager,
+		egress:     make(chan []byte),
 	}
 }
 
 func (c *Client) readMessages() {
-	defer func () {
+	defer func() {
 		c.manager.removeClient(c)
 	}()
 	for {
@@ -57,7 +57,7 @@ func (c *Client) readMessages() {
 			eventType := string(event["event"])
 			if eventType != "" {
 				// raw json strings come with their leading and trailing quotation marks still this parses this out
-				eventType = eventType[1:len(eventType) - 1]
+				eventType = eventType[1 : len(eventType)-1]
 			}
 
 			clientEventType, err := GetClientEventFromStr(eventType)
@@ -72,13 +72,9 @@ func (c *Client) readMessages() {
 
 			fmt.Println("Client event:", string(event["event"]))
 			fmt.Println("Client event message:", string(event["username-input"]))
-			fmt.Println("Player queue length:", len(c.manager.playerQueue.queue))	
+			fmt.Println("Player queue length:", len(c.manager.playerQueue.queue))
 		}
 
-		//for testing
-		for wsclient := range c.manager.clients {
-			wsclient.egress <- payload
-		}
 	}
 }
 
@@ -100,6 +96,7 @@ func (c *Client) writeMessages() {
 
 			if err := c.connection.WriteMessage(websocket.TextMessage, message); err != nil {
 				log.Println(err)
+				return
 			}
 			log.Println("sent message")
 		}

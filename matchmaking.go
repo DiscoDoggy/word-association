@@ -7,21 +7,21 @@ import (
 )
 
 type PlayerQueue struct {
-	queue []*Client
-	addCh chan *Client
+	queue    []*Client
+	addCh    chan *Client
 	removeCh chan *Client
 
-	manager 	*Manager
+	manager *Manager
 	sync.RWMutex
 }
 
 func CreatePlayerQueue(manager *Manager) *PlayerQueue {
 	return &PlayerQueue{
-		queue: make([]*Client, 0, 2),
-		addCh: make(chan *Client),
+		queue:    make([]*Client, 0, 2),
+		addCh:    make(chan *Client),
 		removeCh: make(chan *Client),
-		manager: manager,
-	}	
+		manager:  manager,
+	}
 }
 
 func (pq *PlayerQueue) addClientToQueue(client *Client) error {
@@ -38,15 +38,15 @@ func (pq *PlayerQueue) addClientToQueue(client *Client) error {
 	return nil
 }
 
-func (pq *PlayerQueue) removePlayerFromQueue(client *Client) error{
+func (pq *PlayerQueue) removePlayerFromQueue(client *Client) error {
 	pq.Lock()
 	defer pq.Unlock()
 
 	for idx, c := range pq.queue {
 		if c == client {
-			pq.queue = append(pq.queue[:idx], pq.queue[idx+1:]...)	
+			pq.queue = append(pq.queue[:idx], pq.queue[idx+1:]...)
 			break
-		} 
+		}
 	}
 
 	return nil
@@ -96,7 +96,8 @@ func (pq *PlayerQueue) ScanPlayerQueue() {
 			}
 
 			log.Println("client added to queue")
-		case client, ok := <- pq.removeCh:
+
+		case client, ok := <-pq.removeCh:
 			if !ok {
 				log.Println("issue reading client from remove client channel")
 				return
@@ -107,17 +108,21 @@ func (pq *PlayerQueue) ScanPlayerQueue() {
 				log.Println("issue removing client from matchmaking queue:", err)
 				return
 			}
+
+			log.Println("client removed from matchmaking queue")
 		}
 
 		currQueueLen := pq.Len()
-		if currQueueLen != 0 && currQueueLen % 2 == 0 {
+		if currQueueLen >= 2 {
 			players := pq.popNewMatchPlayers(2)
 
 			// how do we link the player to the match in a more global level?
-			// the maanger can maintain a map of clients -> match 
+			// the maanger can maintain a map of clients -> match
 			// when the client receives an event for the match, the appropriate match can be found and the state can be updated
 			// the player's manager's list of games
-		} 
+
+			CreateMatch(players)
+		}
 
 	}
 }
