@@ -2,18 +2,25 @@ package main
 
 import (
 	"errors"
+	"log"
 	"sync"
 )
 
 type PlayerQueue struct {
 	queue []*Client
+	addCh chan *Client
+	removeCh chan *Client
 
+	manager 	*Manager
 	sync.RWMutex
 }
 
-func CreatePlayerQueue() *PlayerQueue {
+func CreatePlayerQueue(manager *Manager) *PlayerQueue {
 	return &PlayerQueue{
 		queue: make([]*Client, 0, 2),
+		addCh: make(chan *Client),
+		removeCh: make(chan *Client),
+		manager: manager,
 	}	
 }
 
@@ -45,27 +52,72 @@ func (pq *PlayerQueue) removePlayerFromQueue(client *Client) error{
 	return nil
 }
 
-func (pq *PlayerQueue) popNPlayersFromQueue(numPlayersToPop int) []*Client {
+func (pq *PlayerQueue) Len() int {
 	pq.Lock()
 	defer pq.Unlock()
+
+	return len(pq.queue)
+}
+
+func (pq *PlayerQueue) popNewMatchPlayers(numPlayers int) []*Client {
+	pq.Lock()
+	defer pq.Unlock()
+
+	players := pq.queue[:numPlayers]
+	pq.queue = pq.queue[numPlayers:]
+
+	return players
 }
 
 func (pq *PlayerQueue) ScanPlayerQueue() {
 	defer func() {
-		pq.queue = pq.queue[:0]
+		for _, client := range pq.queue {
+			err := pq.removePlayerFromQueue(client)
+			if err != nil {
+				log.Println("issue removing client from queue:", err)
+			}
+		}
+
+		pq.queue = nil
 	}()
 
 	for {
-		// 2 here represents the two players per match
-		if len(pq.queue) % 2 == 0 {
-			matchPlayers := pq.queue[:2]
-			//does this need to go and start its own go routine???
-			CreateMatch(matchPlayers)
-			if len(pq.queue) == 2 {
-				pq.queue = pq.queue[:0]
-			} else {
-				pq.queue = pq.queue[2:] 
+		select {
+		case client, ok := <-pq.addCh:
+			if !ok {
+				log.Println("issue reading client from add client channel:")
+				return
+			}
+
+			err := pq.addClientToQueue(client)
+			if err != nil {
+				log.Println("issue adding client to matchmaking queue:", err)
+				return
+			}
+
+			log.Println("client added to queue")
+		case client, ok := <- pq.removeCh:
+			if !ok {
+				log.Println("issue reading client from remove client channel")
+				return
+			}
+
+			err := pq.removePlayerFromQueue(client)
+			if err != nil {
+				log.Println("issue removing client from matchmaking queue:", err)
+				return
 			}
 		}
+
+		currQueueLen := pq.Len()
+		if currQueueLen != 0 && currQueueLen % 2 == 0 {
+			players := pq.popNewMatchPlayers(2)
+
+			// how do we link the player to the match in a more global level?
+			// the maanger can maintain a map of clients -> match 
+			// when the client receives an event for the match, the appropriate match can be found and the state can be updated
+			// the player's manager's list of games
+		} 
+
 	}
 }

@@ -1,11 +1,15 @@
 package main
 
+import "fmt"
+
 // match info and match state info
 type Match struct {
 	players []*Client
 }
 
 func CreateMatch(players []*Client) error {
+
+	fmt.Println("Creating match")
 	//create match object
 	// adds players to the match
 	// notifies users that they found a match

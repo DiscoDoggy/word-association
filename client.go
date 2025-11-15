@@ -65,20 +65,14 @@ func (c *Client) readMessages() {
 				log.Fatal(err)
 			}
 			if clientEventType == mmQueue {
-				err = c.manager.playerQueue.addClientToQueue(c)
-				if err != nil {
-					log.Fatal(err)
-				}
+				c.manager.playerQueue.addCh <- c
 			} else if clientEventType == mmUnqueue {
-				err = c.manager.playerQueue.removePlayerFromQueue(c)
-				if err != nil {
-					log.Fatal(err)
-				}
+				c.manager.playerQueue.removeCh <- c
 			}
 
 			fmt.Println("Client event:", string(event["event"]))
 			fmt.Println("Client event message:", string(event["username-input"]))
-			
+			fmt.Println("Player queue length:", len(c.manager.playerQueue.queue))	
 		}
 
 		//for testing

@@ -16,7 +16,7 @@ var upgrader = websocket.Upgrader {
 type Manager struct {
 	clients ClientList
 	playerQueue *PlayerQueue
-
+	matches		
 	sync.RWMutex
 }
 
