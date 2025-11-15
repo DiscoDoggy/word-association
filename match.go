@@ -33,19 +33,26 @@ func CreateMatchManager() *MatchManager {
 	return &MatchManager{
 		matches:       make([]*Match, 0),
 		clientToMatch: make(map[*Client]*Match),
+		addMatchCh:    make(chan *Match),
+		removeMatchCh: make(chan *Match),
 	}
 }
 
 func CreateMatch(players []*Client) {
 
 	fmt.Println("Creating match")
-	// match := Match{
-	// 	id:           uuid.New(),
-	// 	matchManager: players[0].manager.matchManager,
-	// 	isActive:     false,
-	// }
+	match := Match{
+		id:           uuid.New(),
+		players:      players,
+		matchManager: players[0].manager.matchManager,
+		isActive:     false,
+	}
 
-	// players[0].manager.matchManager.addMatchCh <- &match
+	log.Println("entering match manager adding")
+
+	players[0].manager.matchManager.addMatchCh <- &match
+
+	log.Println("completed adding match to manager")
 
 	//send both clients the htmx then play game goroutine??
 	var b bytes.Buffer
@@ -84,12 +91,15 @@ func (matchManager *MatchManager) LaunchMatchManager() {
 				return
 			}
 
+			log.Println("doing match manager add match")
+
 			matchManager.matches = append(matchManager.matches, match)
 			for _, client := range match.players {
 				matchManager.clientToMatch[client] = match
 			}
 
-			return
+			log.Println("added match to manager...returning")
+
 		case match, ok := <-matchManager.removeMatchCh:
 			if !ok {
 				log.Println("error getting match from remove channel")
@@ -103,6 +113,7 @@ func (matchManager *MatchManager) LaunchMatchManager() {
 			for i, managedMatch := range matchManager.matches {
 				if managedMatch == match {
 					matchManager.matches = append(matchManager.matches[:i], matchManager.matches[i+1:]...)
+					break
 				}
 			}
 		}

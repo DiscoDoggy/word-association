@@ -61,6 +61,7 @@ func main() {
 	http.HandleFunc("/ws", wsManager.serveWS)
 
 	go wsManager.playerQueue.ScanPlayerQueue()
+	go wsManager.matchManager.LaunchMatchManager()
 
 	log.Fatal(http.ListenAndServe(":3000", nil))
 }
