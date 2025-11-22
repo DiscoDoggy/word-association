@@ -2,3 +2,4 @@ node_modules
 .air.toml
 tmp
 .libs_css_media
+*output.css

@@ -1,6 +1,6 @@
 package templates
 
-templ Base(title string) {
+templ Base(title string, bodyStyles string) {
     <html lang="en">
         <head>
             <script src="/static/js/htmx.min.js"></script>
@@ -8,6 +8,10 @@ templ Base(title string) {
             <link href="/static/css/output.css" rel="stylesheet">
             <title>{title}</title>
         </head>
-        { children... }
+        <body hx-ext="ws" ws-connect="/ws" class={bodyStyles}>
+            <div id="page-content">
+                { children... }
+            </div>
+        </body>
     </html>
 }
