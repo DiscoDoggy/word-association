@@ -51,6 +51,9 @@ func CreateMatch(players []*Client) {
 		matchManager: players[0].manager.matchManager,
 		isActive:     false,
 		usedWords: make(map[string]bool),
+
+		wordSubCh: make(chan string),
+		wordEditCh: make(chan string),
 	}
 
 	log.Println("entering match manager adding")
@@ -117,10 +120,13 @@ func (m *Match) PlayGame() {
 				log.Println("issue reading word from word submission channel")
 			}
 			//TODO: Preprocess word. eg Mcdonald's === McDonalds for say the fast food topic
+			log.Println("entered m.WordSUbmission channel event")
+			log.Println("entered word:", word)
 			_, doesExist := topic[word]
 			_, isAlreadyUsedWord := m.usedWords[word]
 			if !doesExist || isAlreadyUsedWord {
 				//send lose game and win game to respective clients
+				log.Println("enter already used word || word does not exist in topic")
 			} else {
 				m.usedWords[word] = true
 

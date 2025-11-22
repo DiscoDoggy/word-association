@@ -55,9 +55,10 @@ func (c *Client) readMessages() {
 			// TODO : Create more robust handling for events that may not exist or may not match structure
 			// fatalling inside of a goroutine kills entire program and probably should not be used
 			eventType := string(event["event"])
+			log.Println("event type:", eventType)
 			if eventType != "" {
 				// raw json strings come with their leading and trailing quotation marks still this parses this out
-				eventType = eventType[1 : len(eventType)-1]
+				eventType = TrimFirstLastChar(eventType) 
 			}
 
 			clientEventType, err := GetClientEventFromStr(eventType)
@@ -68,6 +69,16 @@ func (c *Client) readMessages() {
 				c.manager.playerQueue.addCh <- c
 			} else if clientEventType == mmUnqueue {
 				c.manager.playerQueue.removeCh <- c
+			} else if clientEventType == mWordSubmission {
+				log.Println("attempting to write to match word submission channel")
+				match, ok := c.manager.matchManager.clientToMatch[c]
+				if !ok {
+					log.Println("Error: Client does not exist in client->match table")
+				} else {
+					submittedWord := string(event["word"])
+					submittedWord = TrimFirstLastChar(submittedWord)
+					match.wordSubCh <- submittedWord 
+				}
 			}
 
 			fmt.Println("Client event:", string(event["event"]))
@@ -101,6 +112,10 @@ func (c *Client) writeMessages() {
 			log.Println("sent message")
 		}
 	}
+}
+
+func TrimFirstLastChar(s string) string {
+	return s[1:len(s) - 1]
 }
 
 //so one of the difficulties here is that t
