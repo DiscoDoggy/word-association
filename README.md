@@ -23,5 +23,8 @@ concurrency feel easier than it probably might be in another language.
 One of the large challenges of a multiplayer game was having the clients stay in sync with the server. In a lot of senses, the game is "played" on the server and the clients see an "illusion" of the game. However, because the ground truth of the game is on the server,
 the states the client see must closely mirror that of the server. Using templates through templ makes this a bit easier beacuse I can just send the appropriate snippets of HTMX to the clients and Golang and templ rendering are incredily fast so there is little lag.
 
+Another large challenge was the mindset change about how to send data to the client. I am very much used to sending JSON to the UI and having the UI use JSON. However, with templ, HTMX, and websockets, I would be sending HTML over the websockets to the clients to show. 
+This was a very large paradigm shift and at times i had troubles thinking about it.
+
 I am clearly not a frontend developer and much of my focus was on the "backend" instead of the UI but improvements to the UI will come. This project as it stands is still a prototype. 
 
