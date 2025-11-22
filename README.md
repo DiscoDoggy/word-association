@@ -28,3 +28,5 @@ This was a very large paradigm shift and at times i had troubles thinking about 
 
 I am clearly not a frontend developer and much of my focus was on the "backend" instead of the UI but improvements to the UI will come. This project as it stands is still a prototype. 
 
+## Use of AI
+For projects that are strictly about learning, I avoid the use of straightout vibecoding. I find when I vibecode, I do not run into as many challenges beacuse I am not deep enough into my own codebase to even encounter the design challenges. Things just work. I do use AI as a consultant for ideas and how to approach things. I use it for quick documentation. I use it occasionally to double check my tailwind as well.
