@@ -9,7 +9,7 @@ templ Base(title string, bodyStyles string) {
             <title>{title}</title>
         </head>
         <body hx-ext="ws" ws-connect="/ws" class={bodyStyles}>
-            <div id="page-content">
+            <div id="page-content" class="flex flex-col h-screen">
                 { children... }
             </div>
         </body>
