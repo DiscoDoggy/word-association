@@ -7,9 +7,18 @@ templ Base(title string, bodyStyles string) {
             <script src="https://cdn.jsdelivr.net/npm/htmx-ext-ws@2.0.4" integrity="sha384-1RwI/nvUSrMRuNj7hX1+27J8XDdCoSLf0EjEyF69nacuWyiJYoQ/j39RT1mSnd2G" crossorigin="anonymous"></script>
             <link href="/static/css/output.css" rel="stylesheet">
             <title>{title}</title>
+
+            <script>
+                // Diagnostics: surface htmx websocket / OOB events in the console
+                document.addEventListener('htmx:wsOpen', function(e){ console.log('htmx websocket open', e.detail); });
+                document.addEventListener('htmx:wsClosed', function(e){ console.log('htmx websocket closed', e.detail); });
+                document.addEventListener('htmx:wsError', function(e){ console.warn('htmx websocket error', e.detail); });
+                document.addEventListener('htmx:wsMessage', function(e){ console.log('htmx ws message', e.detail); });
+                document.addEventListener('htmx:oobErrorNoTarget', function(e){ console.warn('htmx OOB no target', e.detail); });
+            </script>
         </head>
         <body hx-ext="ws" ws-connect="/ws" class={bodyStyles}>
-            <div id="page-content">
+            <div id="page-content" class="flex flex-col h-screen">
                 { children... }
             </div>
         </body>

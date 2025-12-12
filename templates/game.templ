@@ -2,10 +2,10 @@ package templates
 
 templ GameContent() {
     <!-- game container  -->
-    <main id="page-content" class="flex flex-col justify-between h-full" hx-swap-oob="true">
+    <main id="page-content" class="flex flex-col justify-between h-full" hx-swap-oob="outerHTML:#page-content">
         
         <!-- main player side -->
-        <div class="flex flex-col items-center justify-center grow bg-green-500">
+        <div id="logged-in-use-game-side" class="flex flex-col items-center justify-center grow bg-green-500">
             <p>You</p>
             <form 
                 ws-send
@@ -32,9 +32,9 @@ templ GameContent() {
 }
 
 templ NewGameContent(isCurrTurn bool) {
-    <main id="page-content" class="flex flex-col justify-between h-full" hx-swap-oob="true">
+    <main id="page-content" class="flex flex-col justify-between h-full" hx-swap-oob="outerHTML:#page-content">
     if isCurrTurn {
-        <div class="flex flex-col items-center justify-center grow bg-green-500">
+        <div id="logged-in-use-game-side" class="flex flex-col items-center justify-center grow bg-green-500">
             <p>You</p>
             <form 
                 ws-send
@@ -58,7 +58,7 @@ templ NewGameContent(isCurrTurn bool) {
             </div>
         </div>
     } else {
-        <div class="flex flex-col items-center justify-center grow bg-red-500">
+        <div id="logged-in-use-game-side" class="flex flex-col items-center justify-center grow bg-red-500">
             <p>You</p>
             <form 
                 ws-send

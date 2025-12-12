@@ -1,0 +1,7 @@
+package templates 
+
+templ WrappedIndex(content templ.Component) {
+    <div hx-swap-oob="innerHTML:#page-content">
+        @content 
+    </div>
+} 

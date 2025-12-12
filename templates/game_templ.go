@@ -29,7 +29,7 @@ func GameContent() templ.Component {
 			templ_7745c5c3_Var1 = templ.NopComponent
 		}
 		ctx = templ.ClearChildren(ctx)
-		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 1, "<!-- game container  --><main id=\"page-content\" class=\"flex flex-col justify-between h-full\" hx-swap-oob=\"true\"><!-- main player side --><div class=\"flex flex-col items-center justify-center grow bg-green-500\"><p>You</p><form ws-send hx-vals='{\"event\": \"m.word-submission\"}'><input class=\"m-2 rounded-xl bg-white text-center\" type=\"text\" name=\"word\" placeholder=\"Your Word...\" ws-send hx-trigger=\"input changed delay:250ms\" hx-vals='{\"event\": \"m.word-change\"}'> <button type=\"submit\">Submit Word</button></form></div><!-- opponent side --><div class=\"flex flex-col grow items-center justify-center  bg-red-500\"><p>opponent</p><div class=\"\"><input disabled class=\"m-2 rounded-xl bg-white text-center\" type=\"text\" placeholder=\"Their Word...\"></div></div></main>")
+		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 1, "<!-- game container  --><main id=\"page-content\" class=\"flex flex-col justify-between h-full\" hx-swap-oob=\"outerHTML:#page-content\"><!-- main player side --><div id=\"logged-in-use-game-side\" class=\"flex flex-col items-center justify-center grow bg-green-500\"><p>You</p><form ws-send hx-vals='{\"event\": \"m.word-submission\"}'><input class=\"m-2 rounded-xl bg-white text-center\" type=\"text\" name=\"word\" placeholder=\"Your Word...\" ws-send hx-trigger=\"input changed delay:250ms\" hx-vals='{\"event\": \"m.word-change\"}'> <button type=\"submit\">Submit Word</button></form></div><!-- opponent side --><div class=\"flex flex-col grow items-center justify-center  bg-red-500\"><p>opponent</p><div class=\"\"><input disabled class=\"m-2 rounded-xl bg-white text-center\" type=\"text\" placeholder=\"Their Word...\"></div></div></main>")
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
@@ -58,17 +58,17 @@ func NewGameContent(isCurrTurn bool) templ.Component {
 			templ_7745c5c3_Var2 = templ.NopComponent
 		}
 		ctx = templ.ClearChildren(ctx)
-		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 2, "<main id=\"page-content\" class=\"flex flex-col justify-between h-full\" hx-swap-oob=\"true\">")
+		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 2, "<main id=\"page-content\" class=\"flex flex-col justify-between h-full\" hx-swap-oob=\"outerHTML:#page-content\">")
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
 		if isCurrTurn {
-			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 3, "<div class=\"flex flex-col items-center justify-center grow bg-green-500\"><p>You</p><form ws-send hx-vals='{\"event\": \"m.word-submission\"}'><input autofocus class=\"m-2 rounded-xl bg-white text-center\" type=\"text\" name=\"word\" placeholder=\"Your Word...\" ws-send hx-trigger=\"input changed delay:250ms\" hx-vals='{\"event\": \"m.word-change\"}'> <button type=\"submit\">Submit Word</button></form></div><!-- opponent side --> <div class=\"flex flex-col grow items-center justify-center bg-red-500\"><p>opponent</p><div class=\"\"><input disabled class=\"m-2 rounded-xl bg-white text-center\" type=\"text\" placeholder=\"Their Word...\"></div></div>")
+			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 3, "<div id=\"logged-in-use-game-side\" class=\"flex flex-col items-center justify-center grow bg-green-500\"><p>You</p><form ws-send hx-vals='{\"event\": \"m.word-submission\"}'><input autofocus class=\"m-2 rounded-xl bg-white text-center\" type=\"text\" name=\"word\" placeholder=\"Your Word...\" ws-send hx-trigger=\"input changed delay:250ms\" hx-vals='{\"event\": \"m.word-change\"}'> <button type=\"submit\">Submit Word</button></form></div><!-- opponent side --> <div class=\"flex flex-col grow items-center justify-center bg-red-500\"><p>opponent</p><div class=\"\"><input disabled class=\"m-2 rounded-xl bg-white text-center\" type=\"text\" placeholder=\"Their Word...\"></div></div>")
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
 		} else {
-			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 4, "<div class=\"flex flex-col items-center justify-center grow bg-red-500\"><p>You</p><form ws-send hx-vals='{\"event\": \"m.word-submission\"}'><input disabled class=\"m-2 rounded-xl bg-white text-center\" type=\"text\" name=\"word\" placeholder=\"Your Word...\" ws-send hx-trigger=\"input changed delay:250ms\" hx-vals='{\"event\": \"m.word-change\"}'> <button type=\"submit\">Submit Word</button></form></div><div class=\"flex flex-col grow items-center justify-center bg-green-500\"><p>opponent</p><div class=\"\"><input disabled class=\"m-2 rounded-xl bg-white text-center\" type=\"text\" placeholder=\"Their Word...\"></div></div>")
+			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 4, "<div id=\"logged-in-use-game-side\" class=\"flex flex-col items-center justify-center grow bg-red-500\"><p>You</p><form ws-send hx-vals='{\"event\": \"m.word-submission\"}'><input disabled class=\"m-2 rounded-xl bg-white text-center\" type=\"text\" name=\"word\" placeholder=\"Your Word...\" ws-send hx-trigger=\"input changed delay:250ms\" hx-vals='{\"event\": \"m.word-change\"}'> <button type=\"submit\">Submit Word</button></form></div><div class=\"flex flex-col grow items-center justify-center bg-green-500\"><p>opponent</p><div class=\"\"><input disabled class=\"m-2 rounded-xl bg-white text-center\" type=\"text\" placeholder=\"Their Word...\"></div></div>")
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}

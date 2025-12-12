@@ -20,7 +20,11 @@ type Match struct {
 	wordSubCh chan string
 	wordEditCh chan string
 
+	playerExitCh chan *Client
+
 	usedWords	map[string]bool
+
+	endGameCh chan bool
 }
 
 type MatchManager struct {
@@ -54,6 +58,10 @@ func CreateMatch(players []*Client) {
 
 		wordSubCh: make(chan string),
 		wordEditCh: make(chan string),
+
+		endGameCh: make(chan bool),
+
+		playerExitCh: make(chan *Client),
 	}
 
 	log.Println("entering match manager adding")
@@ -113,6 +121,9 @@ func (m *Match) PlayGame() {
 	log.Println("html for game page sent")
 
 	//game loop
+	// how to handle exit game and game end clean up
+		// just make an event that gets sent on button exit??
+		//page redirections are really just pushes of html so in this case we would push the home page to the user again after cleaning up
 	for {
 		select {
 		case word, ok := <- m.wordSubCh:
@@ -126,6 +137,11 @@ func (m *Match) PlayGame() {
 			_, isAlreadyUsedWord := m.usedWords[word]
 			if !doesExist || isAlreadyUsedWord {
 				//send lose game and win game to respective clients
+				err := m.SendEndGameHtmlToPlayers(currPlayerTurn)
+				if err != nil {
+					log.Println("error sending end game state to players")
+					return
+				}
 				log.Println("enter already used word || word does not exist in topic")
 			} else {
 				m.usedWords[word] = true
@@ -144,8 +160,56 @@ func (m *Match) PlayGame() {
 					return
 				}
 			}
+		case exitingPlayer, ok := <- m.playerExitCh:
+			if !ok {
+				log.Println("error reading player leave channel")
+			} else {
+				for i, player := range m.players {
+					if exitingPlayer == player {
+						m.players = append(m.players[:i], m.players[i + 1:]...) 
+					}
+				}	
+
+				html, err := templates.ConvertComponentToHtml(templates.WrappedIndex(templates.HomeContent()))
+				if err != nil {
+					log.Println("error converting home page template to html")
+					return
+				}
+				//we want to wait until all players have formally exited before we destory the match
+				exitingPlayer.egress <- html
+				if len(m.players) <= 0 {
+					m.matchManager.removeMatchCh <- m	
+					return
+				}
+			}
+
 		}
 	}
+}
+
+func (m *Match) SendEndGameHtmlToPlayers(losingPlayer *Client) error {
+	html, err := templates.ConvertComponentToHtml(templates.EndgameCard(false, ""))
+	if err != nil {
+		//TODO: Create error banner
+		log.Println("error rendering end game cards:", err)
+		return err
+	}
+
+	losingPlayer.egress <- html
+
+	//TODO later determine how to determine singular winner if there were more than 2 players
+	html, err = templates.ConvertComponentToHtml(templates.EndgameCard(true, ""))
+	if err != nil {
+		log.Println("error rendering end game cards:", err)
+	}
+
+	for _, player := range m.players {
+		if player != losingPlayer {
+			player.egress <- html
+		}
+	}
+
+	return nil
 }
 
 func (m *Match) SendGameHtmlToCorrectPlayer (currPlayerTurn *Client) error {
@@ -216,4 +280,3 @@ func (matchManager *MatchManager) LaunchMatchManager() {
 	}
 }
 
-// who should launch the game and what should launch the game what event
