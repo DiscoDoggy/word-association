@@ -79,6 +79,14 @@ func (c *Client) readMessages() {
 					submittedWord = TrimFirstLastChar(submittedWord)
 					match.wordSubCh <- submittedWord 
 				}
+			} else if clientEventType == mPlayerExit {
+				match, ok := c.manager.matchManager.clientToMatch[c]
+				if !ok {
+					log.Println("client is not part of any match")
+					//TODO: Some sort of error handling
+				} else {
+					match.playerExitCh <- c
+				}
 			}
 
 			fmt.Println("Client event:", string(event["event"]))
