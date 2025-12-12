@@ -14,6 +14,7 @@ const (
 	mmUnqueue
 	mWordSubmission
 	mWordChange
+	mPlayerExit
 )
 
 func GetClientEventFromStr(event string) (ClientSendingEvents, error) {
@@ -26,8 +27,9 @@ func GetClientEventFromStr(event string) (ClientSendingEvents, error) {
 		return mWordSubmission, nil
 	case "m.word-change":
 		return mWordChange, nil
+	case "m.player-exit":
+		return mPlayerExit, nil
 	}
 
 	return -1, errors.New("client event does not exist")
-
 }

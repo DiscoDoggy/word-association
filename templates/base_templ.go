@@ -42,7 +42,7 @@ func Base(title string, bodyStyles string) templ.Component {
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
-		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 2, "</title></head>")
+		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 2, "</title><script>\n                // Diagnostics: surface htmx websocket / OOB events in the console\n                document.addEventListener('htmx:wsOpen', function(e){ console.log('htmx websocket open', e.detail); });\n                document.addEventListener('htmx:wsClosed', function(e){ console.log('htmx websocket closed', e.detail); });\n                document.addEventListener('htmx:wsError', function(e){ console.warn('htmx websocket error', e.detail); });\n                document.addEventListener('htmx:wsMessage', function(e){ console.log('htmx ws message', e.detail); });\n                document.addEventListener('htmx:oobErrorNoTarget', function(e){ console.warn('htmx OOB no target', e.detail); });\n            </script></head>")
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
