@@ -1,9 +1,29 @@
 package templates
 
-templ EndgameContent(didWin bool, message string) {
-    
-}
+// templ EndgameContent(didWin bool, message string) {
 
-templ EndgameCard(didWin bool) {
-    
+// }
+
+// this should overlap the game screen
+templ EndgameCard(didWin bool, message string) {
+    <div hx-swap-oob="afterend:#logged-in-use-game-side">
+        <div class="flex fixed inset-0 bg-white z-2 justify-center items-center">
+            <div class="flex flex-col rounded-2xl text-center">
+                if didWin {
+                    <h3>You Win!</h3>
+                } else {
+                    <h3>You Lose!</h3>
+                }
+
+                <p>{message}</p>
+                <button 
+                    class="m-1 p-1 text-center text-violet-600 border border-violet-600 rounded hover:bg-violet-600 hover:text-white active:bg-indigo-500 focus:outline-none focus:ring"
+                    ws-send
+                    hx-vals='{"event" : "m.player-exit"}'
+                >
+                    Exit
+                </button>
+            </div>
+        </div>
+    </div>
 }
