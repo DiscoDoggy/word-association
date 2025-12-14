@@ -1,0 +1,11 @@
+package templates
+
+templ OpponentTextBox(oppWord string) {
+    <div id="opp-text-box" hx-swap-oob="innerHTML:#opp-text-box"> 
+        if oppWord == "" {
+            <input disabled class="m-2 rounded-xl bg-white text-center" type="text" placeholder="Their Word...">
+        } else {
+            <input disabled class="m-2 rounded-xl bg-white text-center" type="text" value={oppWord}>
+        }
+    </div>
+}

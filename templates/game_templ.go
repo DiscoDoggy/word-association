@@ -37,7 +37,7 @@ func GameContent() templ.Component {
 	})
 }
 
-func NewGameContent(isCurrTurn bool) templ.Component {
+func NewGameContent(isCurrTurn bool, oppWord string) templ.Component {
 	return templruntime.GeneratedTemplate(func(templ_7745c5c3_Input templruntime.GeneratedComponentInput) (templ_7745c5c3_Err error) {
 		templ_7745c5c3_W, ctx := templ_7745c5c3_Input.Writer, templ_7745c5c3_Input.Context
 		if templ_7745c5c3_CtxErr := ctx.Err(); templ_7745c5c3_CtxErr != nil {
@@ -63,17 +63,33 @@ func NewGameContent(isCurrTurn bool) templ.Component {
 			return templ_7745c5c3_Err
 		}
 		if isCurrTurn {
-			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 3, "<div id=\"logged-in-use-game-side\" class=\"flex flex-col items-center justify-center grow bg-green-500\"><p>You</p><form ws-send hx-vals='{\"event\": \"m.word-submission\"}'><input autofocus class=\"m-2 rounded-xl bg-white text-center\" type=\"text\" name=\"word\" placeholder=\"Your Word...\" ws-send hx-trigger=\"input changed delay:250ms\" hx-vals='{\"event\": \"m.word-change\"}'> <button type=\"submit\">Submit Word</button></form></div><!-- opponent side --> <div class=\"flex flex-col grow items-center justify-center bg-red-500\"><p>opponent</p><div class=\"\"><input disabled class=\"m-2 rounded-xl bg-white text-center\" type=\"text\" placeholder=\"Their Word...\"></div></div>")
+			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 3, "<div id=\"logged-in-use-game-side\" class=\"flex flex-col items-center justify-center grow bg-green-500\"><p>You</p><form ws-send hx-vals='{\"event\": \"m.word-submission\"}'><input autofocus class=\"m-2 rounded-xl bg-white text-center\" type=\"text\" name=\"word\" placeholder=\"Your Word...\" ws-send hx-trigger=\"input changed delay:250ms\" hx-vals='{\"event\": \"m.word-change\"}'> <button type=\"submit\">Submit Word</button></form></div><!-- opponent side --> <div class=\"flex flex-col grow items-center justify-center bg-red-500\"><p>opponent</p>")
+			if templ_7745c5c3_Err != nil {
+				return templ_7745c5c3_Err
+			}
+			templ_7745c5c3_Err = OpponentTextBox(oppWord).Render(ctx, templ_7745c5c3_Buffer)
+			if templ_7745c5c3_Err != nil {
+				return templ_7745c5c3_Err
+			}
+			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 4, "</div>")
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
 		} else {
-			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 4, "<div id=\"logged-in-use-game-side\" class=\"flex flex-col items-center justify-center grow bg-red-500\"><p>You</p><form ws-send hx-vals='{\"event\": \"m.word-submission\"}'><input disabled class=\"m-2 rounded-xl bg-white text-center\" type=\"text\" name=\"word\" placeholder=\"Your Word...\" ws-send hx-trigger=\"input changed delay:250ms\" hx-vals='{\"event\": \"m.word-change\"}'> <button type=\"submit\">Submit Word</button></form></div><div class=\"flex flex-col grow items-center justify-center bg-green-500\"><p>opponent</p><div class=\"\"><input disabled class=\"m-2 rounded-xl bg-white text-center\" type=\"text\" placeholder=\"Their Word...\"></div></div>")
+			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 5, "<div id=\"logged-in-use-game-side\" class=\"flex flex-col items-center justify-center grow bg-red-500\"><p>You</p><form ws-send hx-vals='{\"event\": \"m.word-submission\"}'><input disabled class=\"m-2 rounded-xl bg-white text-center\" type=\"text\" name=\"word\" placeholder=\"Your Word...\" ws-send hx-trigger=\"input changed delay:250ms\" hx-vals='{\"event\": \"m.word-change\"}'> <button type=\"submit\">Submit Word</button></form></div><div class=\"flex flex-col grow items-center justify-center bg-green-500\"><p>opponent</p>")
+			if templ_7745c5c3_Err != nil {
+				return templ_7745c5c3_Err
+			}
+			templ_7745c5c3_Err = OpponentTextBox(oppWord).Render(ctx, templ_7745c5c3_Buffer)
+			if templ_7745c5c3_Err != nil {
+				return templ_7745c5c3_Err
+			}
+			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 6, "</div>")
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
 		}
-		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 5, "</main>")
+		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 7, "</main>")
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
