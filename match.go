@@ -160,6 +160,22 @@ func (m *Match) PlayGame() {
 					return
 				}
 			}
+		case wordPart, ok := <- m.wordEditCh:
+			if !ok {
+				log.Println("error reading from word edit channel")
+			} else {
+				// want to write the updated textbox content to the opposing player (player whose turn it is not)
+				html, err := templates.ConvertComponentToHtml(templates.OpponentTextBox(wordPart))
+				if err != nil {
+					log.Println("error rendering opponent text box as html")
+				} else {
+					for _, player := range m.players {
+						if player != currPlayerTurn {
+							player.egress <- html
+						}
+					}
+				}
+			}
 		case exitingPlayer, ok := <- m.playerExitCh:
 			if !ok {
 				log.Println("error reading player leave channel")
@@ -213,7 +229,7 @@ func (m *Match) SendEndGameHtmlToPlayers(losingPlayer *Client) error {
 }
 
 func (m *Match) SendGameHtmlToCorrectPlayer (currPlayerTurn *Client) error {
-	gameContentHtml, err := templates.ConvertComponentToHtml(templates.NewGameContent(true))
+	gameContentHtml, err := templates.ConvertComponentToHtml(templates.NewGameContent(true, ""))
 	if err != nil {
 		//TODO: Create error banner htmx and send to clients
 		log.Println("error rendering game page:", err)
@@ -224,7 +240,7 @@ func (m *Match) SendGameHtmlToCorrectPlayer (currPlayerTurn *Client) error {
 
 	for _, player := range m.players {
 		if player != currPlayerTurn {
-			gameContentHtml, err = templates.ConvertComponentToHtml(templates.NewGameContent(false))
+			gameContentHtml, err = templates.ConvertComponentToHtml(templates.NewGameContent(false, ""))
 			if err != nil {
 				//TODO: Create error banner htmx and send to clients
 				log.Println("error rendering game page:", err)

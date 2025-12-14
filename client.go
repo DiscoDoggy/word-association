@@ -2,6 +2,7 @@ package main
 
 import (
 	"encoding/json"
+	"errors"
 	"fmt"
 	"log"
 
@@ -71,14 +72,24 @@ func (c *Client) readMessages() {
 				c.manager.playerQueue.removeCh <- c
 			} else if clientEventType == mWordSubmission {
 				log.Println("attempting to write to match word submission channel")
-				match, ok := c.manager.matchManager.clientToMatch[c]
-				if !ok {
+				match, err := c.GetClientMatch()
+				if err != nil {
 					log.Println("Error: Client does not exist in client->match table")
 				} else {
 					submittedWord := string(event["word"])
 					submittedWord = TrimFirstLastChar(submittedWord)
 					match.wordSubCh <- submittedWord 
 				}
+			} else if clientEventType == mWordChange {
+				match, err := c.GetClientMatch()
+				if err != nil {
+					log.Println("Error: Client does not exist in client->match table")
+				} else {
+					wordPart := string(event["word"])
+					wordPart = TrimFirstLastChar(wordPart)
+					match.wordEditCh <- wordPart 
+				}
+
 			} else if clientEventType == mPlayerExit {
 				match, ok := c.manager.matchManager.clientToMatch[c]
 				if !ok {
@@ -124,6 +135,15 @@ func (c *Client) writeMessages() {
 
 func TrimFirstLastChar(s string) string {
 	return s[1:len(s) - 1]
+}
+
+func (c *Client) GetClientMatch() (*Match, error) {
+	match, ok := c.manager.matchManager.clientToMatch[c]
+	if !ok {
+		return nil, errors.New("error: client is not part of any match")
+	}
+
+	return match, nil
 }
 
 //so one of the difficulties here is that t

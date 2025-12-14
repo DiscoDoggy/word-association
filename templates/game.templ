@@ -31,7 +31,7 @@ templ GameContent() {
     </main>
 }
 
-templ NewGameContent(isCurrTurn bool) {
+templ NewGameContent(isCurrTurn bool, oppWord string) {
     <main id="page-content" class="flex flex-col justify-between h-full" hx-swap-oob="outerHTML:#page-content">
     if isCurrTurn {
         <div id="logged-in-use-game-side" class="flex flex-col items-center justify-center grow bg-green-500">
@@ -52,10 +52,14 @@ templ NewGameContent(isCurrTurn bool) {
         <!-- opponent side -->
         <div class="flex flex-col grow items-center justify-center bg-red-500">
             <p>opponent</p>
-            
-            <div class="">
-                <input disabled class="m-2 rounded-xl bg-white text-center" type="text" placeholder="Their Word...">
-            </div>
+            @OpponentTextBox(oppWord) 
+            // <div id="opp-text-box" class="">
+            //     if oppWord == "" {
+            //         <input disabled class="m-2 rounded-xl bg-white text-center" type="text" placeholder="Their Word...">
+            //     } else {
+            //         <input disabled class="m-2 rounded-xl bg-white text-center" type="text" value={oppWord}>
+            //     }
+            // </div>
         </div>
     } else {
         <div id="logged-in-use-game-side" class="flex flex-col items-center justify-center grow bg-red-500">
@@ -75,10 +79,10 @@ templ NewGameContent(isCurrTurn bool) {
 
         <div class="flex flex-col grow items-center justify-center bg-green-500">
             <p>opponent</p>
-            
-            <div class="">
-                <input disabled class="m-2 rounded-xl bg-white text-center" type="text" placeholder="Their Word...">
-            </div>
+            @OpponentTextBox(oppWord) 
+            // <div class="">
+            //     <input disabled class="m-2 rounded-xl bg-white text-center" type="text" placeholder="Their Word...">
+            // </div>
         </div>
     }
 
